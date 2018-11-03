@@ -1,8 +1,8 @@
 
-#微信小程序 Blink-API
+# 微信小程序 Blink-API
 
 
-###About
+### About
 为微信小程序 blink 开发的后台 api。
 基于 laravel 5.5 
 
