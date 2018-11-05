@@ -38,23 +38,22 @@ class ClassicRepository{
 		$this->nextOrPrevious = $action ? $index - 1 : $index + 1;
 		$data = Classic::with( ['allUsers' =>function($query){
 			$query->find(1);
-		}])->orderBy('index','desc')->find($this->nextOrPrevious);
-		//判断 $data->allUsers 是否为空， 及当前用户是否点击 【喜欢】
-		$data->like_status = !$data->allUsers->isEmpty() ?$data->allUsers[0]->pivot->isLike : 0;
-//		dd( $data->like_status);
-		if(!$data){
-			return $this->error_msg( $request);
-		}else{
-			return $data->toArray();
+			}])->orderBy('index','desc')->find($this->nextOrPrevious);
+		//判断 data 是否被找到
+		if(!$data) {
+			return $this->error_msg( $request, 'This episode does not exit~!' );
 		}
+		//判断 $data->allUsers 是否为空， 及当前用户是否点击 【喜欢】
+		$data->like_status = !$data->allUsers->isEmpty() ? $data->allUsers[0]->pivot->isLike : 0;
+		return $data->toArray();
+
 	}
 
-
-//返回错误信息
-	public function error_msg( $request ) {
+	//返回错误信息
+	public function error_msg( $request, $msg ) {
 		return $error = [
 			'error_code' => 3000,
-			'msg' => 'This episode does not exit~!',
+			'msg' => $msg,
 			'request' => $request->path(),
 			'method' => $request->method()
 		];

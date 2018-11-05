@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers\api\v1;
 
+use App\AllUser;
+use App\IsLike;
 use App\Repositories\ClassicRepository;
+use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Classic;
@@ -21,65 +24,21 @@ class ClassicController extends Controller
 		return $this->repo->allClassic();
 	}
 
-
+	//最新一个
 	public function latest() {
 		return $this->repo->findClassic();
-		//allUsers id 写死 1
-//		$latest = Classic::with( ['allUsers' =>function($query){
-//			$query->find(1);
-//		}])->orderBy('index','desc')->first();
-//		$latest->like_status = $latest->allUsers[0]->pivot->isLike || null;
-//		return $latest->toJson();
 	}
 
 	//下一个
 	public function previous($index, Request $request) {
+
 		return $this->repo->nextOrPrevious( $index,1,$request);
-		$error = [
-			'error_code' => 3000,
-			'msg' => 'This episode does not exit~!',
-			'request' => $request->path(),
-			'method' => $request->method()
-		];
-		$data = Classic::orderBy('index','desc')->find($index-1);
-		/*
-		 * 教程实现*/
-		if(!$data){
-			return $error;
-		}else{
-			return $data->toArray();
-		}
-
-//		dd( $data);
-
-		/*
-		 * tommy 实现
-		 *
-		if (!$data){
-			$data = Classic::orderBy('id','desc')->find(1);
-			$data->error = $error;
-			return $data;
-		}
-		else{
-			return $data->toArray();
-		}
-		*/
 	}
 	//下一个
 	public function next($index, Request $request) {
-		$error = [
-			'error_code' => 3000,
-			'msg' => 'This episode does not exit~!',
-			'request' => $request->path(),
-			'method' => $request->method()
-		];
-		$data=Classic::orderBy('index','desc')->find($index + 1);
-		if(!$data){
-			return $error;
-		}else{
-			return $data->toArray();
-		}
+		return $this->repo->nextOrPrevious( $index, 0,$request);
 	}
+
 
 
 	/*
