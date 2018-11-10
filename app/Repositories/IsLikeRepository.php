@@ -8,10 +8,16 @@
 
 namespace App\Repositories;
 
+use App\Classic;
 use App\IsLike;
+use Hamcrest\Core\Is;
 
 class IsLikeRepository{
 
+
+	/*
+	 * $action == 1 => like; ==0 unlike
+	 * */
 	public function likeOrNot($request, $allUser_id ,$action) {
 		$classic_id = $request->art_id;
 		$type = $request->type;//classic_type ???? 为什么需要 type 参数？
@@ -21,9 +27,16 @@ class IsLikeRepository{
 			                'allUser_id' =>$allUser_id,
 			                'classic_id' =>$classic_id,
 		                ]);
+		$classic = Classic::find($classic_id);
+
+		if ($action){
+			$classic->update(['fav_nums' => $classic->fav_nums + 1]);
+		}
+		else{
+			$classic->update(['fav_nums' => $classic->fav_nums - 1]);
+		}
 
 		$res = $is_like->update(['isLike' => $action]);
-
 		if ($res){
 			return $this->error_msg( $request, 'ok~!', '0');
 		}else{

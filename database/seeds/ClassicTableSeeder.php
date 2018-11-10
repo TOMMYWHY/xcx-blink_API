@@ -11,7 +11,7 @@ class ClassicTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(\App\Classic::class,3)->create();
+        factory(\App\Classic::class,8)->create();
 	    factory(\App\AllUser::class,1)->create();
 	    factory(\App\IsLike::class,1)->create();
     }

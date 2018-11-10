@@ -18,15 +18,10 @@ $factory->define(App\Classic::class, function (Faker $faker) {
 	return [
 		"content"=> $faker->paragraph($nbSentences = 2, $variableNbSentences = true),
         "fav_nums"=> $faker->numberBetween(0,100),
-//        "id"=> 1,
-        "image"=> $faker->imageUrl(),
-//        "index"=> function(){
-//
-//        },
-//        "like_status"=>$faker->boolean(),
-//        "pubdate"=> $faker->dateTime(),
+        "image"=> $faker->imageUrl($width = 640, $height = 480,'',false),
+        "url"=> '',
         "title"=>$faker->sentence($nbWords=5,$variableNbWords = true),
-        "type"=>$faker->randomElement($array=array(100,200,300,400)),
+        "type"=>$faker->randomElement($array=array(100,200,300)),
 
 	];
 });

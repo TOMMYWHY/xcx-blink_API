@@ -9,6 +9,10 @@
 namespace App\Repositories;
 
 use App\Classic;
+use App\AllUser;
+use App\IsLike;
+use Illuminate\Http\Request;
+
 
 class ClassicRepository{
 
@@ -18,7 +22,7 @@ class ClassicRepository{
 	//返回所有 classic with 点赞 AllUsers
 	public function allClassic() {
 		$classics = Classic::with( 'allUsers')->orderBy( 'index','desc')->get();
-		dd( $classics);
+//		dd( $classics);
 		return $classics;
 	}
 
@@ -30,7 +34,6 @@ class ClassicRepository{
 		$latest->like_status = !$latest->allUsers->isEmpty() ?$latest->allUsers[0]->pivot->isLike : 0;
 		return $latest->toJson();
 	}
-
 
 	//根据参数 $action 进行上一个与下一个操作
 	public function nextOrPrevious( $index, $action, $request) {
@@ -49,6 +52,38 @@ class ClassicRepository{
 
 	}
 
+	//获取该期刊所有点赞数 与 当前用户 like_status
+	public function getLikeAndFavor( $type, $id, $request ) {
+		$allUser_id = AllUser::find(1)->id;
+		$classic = Classic::find($id);
+		if (!$classic){
+			return $this->error_msg( $request, 'We do not have this periodical.');
+		}
+		$like_status = IsLike::where('allUser_id',$allUser_id)
+		                     ->where('classic_id',$classic->id)->first();
+//							 ->isLike;
+		$fav_nums = $classic->fav_nums;
+		//当前用户 未操作时
+		if (!$like_status){
+			return $data =[
+				'fav_nums' =>$fav_nums,
+				'id' =>$id,
+				'like_status' =>0,
+				'msg' => 'you have not like or unlike it.'
+			];
+		}
+		else{
+			//当前用户操作过，无论是 【喜欢】 或者是 【不喜欢】
+			return $data =[
+				'fav_nums' =>$fav_nums,
+				'id' =>$id,
+				'like_status' =>$like_status->isLike,
+			];
+		}
+
+	}
+
+	//===================================================
 	//返回错误信息
 	public function error_msg( $request, $msg ) {
 		return $error = [

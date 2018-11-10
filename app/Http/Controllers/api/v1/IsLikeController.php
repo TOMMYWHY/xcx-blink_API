@@ -17,21 +17,18 @@ class IsLikeController extends Controller
 	public function __construct( IsLikeRepository $repository ) {
 		$this->repo = $repository;
 	}
+
+
 	//点赞操作
 	public function like(Request $request ) {
 
 		$allUser_id = AllUser::find(1)->id;
 		return $this->repo->likeOrNot($request, $allUser_id,1);
 	}
-
+	//取消点赞操作
 	public function like_cancel( Request $request ) {
 		$allUser_id = AllUser::find(1)->id;
 		return $this->repo->likeOrNot( $request, $allUser_id, 0);
-	}
-
-
-	public function favor( $type, $id ) {
-		//todo
 	}
 
 }

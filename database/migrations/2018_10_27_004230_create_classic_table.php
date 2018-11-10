@@ -21,6 +21,8 @@ class CreateClassicTable extends Migration
 	        $table->text('image');
 	        $table->integer( 'type');//type: 期刊类型,这里的类型分为:100 电影 200 音乐 300 句子
 	        $table->integer( 'fav_nums');//fav_nums: 点赞次数
+	        $table->text( 'url');//music url
+
 //	        $table->dateTime('pubdate');
 	        $table->timestamps();
         });
