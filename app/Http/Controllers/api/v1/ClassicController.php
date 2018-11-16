@@ -47,6 +47,11 @@ class ClassicController extends Controller
 		return  $this->repo->getLikeAndFavor($type, $id,$request);
 	}
 
+	public function allFavor() {
+		$data = AllUser::find(1)->classics()->get();
+//		$data = Classic::allUsers(1)->get();
+		return $data;
+	}
 
 
 	//=================

@@ -25,12 +25,18 @@ Route::prefix('v1')->namespace('api\v1')-> group( function (){
 	Route::get('classic/{index}/next','ClassicController@next');
 	Route::get('classic/index','ClassicController@index');
 	Route::get('classic/{type}/{id}/favor','ClassicController@favor');//获取点赞信息
+	Route::get('classic/favor','ClassicController@allFavor');
+
 
 	Route::get('book/hot_list','BookController@index');
 	Route::get('book/favor/count','BookController@getFavorCount');
 	Route::get('book/{book_id}/favor','BookController@getFavor');
 	Route::get('book/{id}/detail','BookController@getDetail');
 	Route::get('book/{id}/short_comment','BookController@getComments');
+	Route::post('book/add/short_comment','BookController@addComments');
+	Route::get('book/hot_keyword','BookController@getHotKeywords');
+	Route::get('book/search','BookController@search');
+
 
 
 	Route::get('/like','IsLikeController@like');

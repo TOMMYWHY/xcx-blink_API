@@ -6,6 +6,7 @@ use App\AllUser;
 use App\Book;
 use App\BookComment;
 use App\BookIsLike;
+use App\Hotkeyword;
 use function foo\func;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -99,4 +100,80 @@ class BookController extends Controller
 				'comments'=>$comments,
 			];
 	}
+
+	/**
+	 * @param Request $request
+	 *
+	 * @return array
+	 */
+	public function addComments(Request $request) {
+		$allUser_id = AllUser::find(1)->id;
+		$book_id = $request->book_id;
+//		$book_id = 1;
+//		if ( ! empty( $request->content ) ) {
+			$content = $request->content;
+//		}
+//		$content ='test11111';
+		$has_content = BookComment::where('content', '=',$content)->first();
+
+//		dd( $has_content);
+		if ($has_content){
+			$has_content->update([
+				'nums'=> $has_content->nums+1,
+			]);
+		}else{
+//			dd( 1);
+			$comment = new BookComment();
+			$comment->book_id = $book_id;
+			$comment->content = $content;
+			$comment->allUser_id = $allUser_id;
+			$comment->nums = 1;
+			$comment->save();
+
+//			dd( $comment);
+		}
+		return $data =[
+			"error_code"=> 0,
+	        "msg"=>"ok",
+	        "request"=>"POST  /book/add_short_comment"
+			];
+	}
+
+	public function getHotKeywords() {
+//		return 'getHotKeywords';
+		$keywords = Hotkeyword::orderBy('nums','desc')-> get();
+		return $keywords;
+	}
+
+	public function search(Request $request  ) {
+//		dd( $q);
+//		$start = $request->start? $request->start : 0; 赋值成功
+//		$start = $request->start || 0; 仅判断; js 中赋值成功
+		$start = $request->start or 0;  //赋值成功
+//		dd( $start);
+
+		$count = $request->count? $request->count : 6;
+		$summary = $request->summary? $request->summary : 0;
+//		dd( $start);
+		$keywords =  $request->q;
+		$books = Book::where('title','like','%'.$keywords.'%')->
+		             orWhere('subtitle','like','%'.$keywords.'%')->
+					 orWhere('summary','like','%'.$keywords.'%')->
+					 get();
+		$return_count = $books->count();
+//		dd( $return_count);
+		$return_books =$books->slice($start,$count);
+//		return $books;
+
+		return $data =[
+			'books'=>$return_books,
+			'count'=>$count,
+			'start'=>$start,
+			'total'=>$return_count
+		];
+
+	}
+
+
+
 }
